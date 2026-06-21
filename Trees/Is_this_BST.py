@@ -45,84 +45,63 @@ The tree in the diagram satisfies the ordering property for a Binary Search Tree
 
 
 """
-class Node:
-    def __init__(self, info): 
-        self.info = info  
-        self.left = None  
-        self.right = None 
-        self.level = None 
+class node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-    def __str__(self):
-        return str(self.info) 
+def newNode():
+    temp =  node(-1)
+    temp.left = None
+    temp.right = None
 
-class BinarySearchTree:
-    def __init__(self): 
-        self.root = None
+    return(temp);
+from math import inf
+""" Node is defined as
+class node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+"""
 
-    def create(self, val):  
-        if self.root == None:
-            self.root = Node(val)
-        else:
-            current = self.root
-         
-            while True:
-                if val < current.info:
-                    if current.left:
-                        current = current.left
-                    else:
-                        current.left = Node(val)
-                        break
-                elif val > current.info:
-                    if current.right:
-                        current = current.right
-                    else:
-                        current.right = Node(val)
-                        break
-                else:
-                    break
-
-# Enter your code here. Read input from STDIN. Print output to STDOUT
-'''
-class Node:
-      def __init__(self,info): 
-          self.info = info  
-          self.left = None  
-          self.right = None 
-           
-
-       // this is a node of the tree , which contains info as data, left , right
-'''
-
-def lca(root, v1, v2):
-    #it is a bst -> left < root < right
-    # lca will be the root where the values split
-    # if both values are greater, go right
-    # if both small, go right 
-    # if one less, one greater -> return it
+def checkBST(root):
+    #checking if its a valid BST
+    # low < root < high 
     
-    if root is None:
-        return None
+    def helper(root, low, high):
+        if root is None:
+            return True
+        
+        if not(low < root.data < high):
+            return False
+        
+        return helper(root.left, low, root.data) and helper(root.right, root.data, high)
     
-    if v1 < root.info and v2 < root.info:
-        return lca(root.left, v1, v2)
-    elif v1 > root.info and v2 > root.info:
-        return lca(root.right, v1, v2)
+    return helper(root, -inf, inf)
+            
+
+ht = int(input())
+cnt = 0
+values = list(map(int, input().split(' ')))
+root  = newNode()
+def inorder(root, ht):
+    global cnt
+    global values
+    if cnt == len(values):
+        return
     else:
-        return root
-    
-    
-    
-  
-
-tree = BinarySearchTree()
-t = int(input())
-
-arr = list(map(int, input().split()))
-
-for i in range(t):
-    tree.create(arr[i])
-
-v = list(map(int, input().split()))
-
-ans = lca(tree.root, v[0], v[1])
-print (ans.info)
+        if(ht>0):
+            root.left = newNode();
+            inorder(root.left, ht-1);
+        root.data = values[cnt];
+        cnt += 1
+        if ht > 0:
+            root.right = newNode();
+            inorder(root.right, ht-1);
+inorder(root, ht);
+if(checkBST(root)):
+    print("Yes")
+else:
+    print("No")
